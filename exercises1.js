@@ -1,0 +1,107 @@
+function Clock () {
+  var date = new Date();
+  this.hour = date.getHours();
+  this.minutes = date.getMinutes();
+  this.seconds = date.getSeconds();
+}
+
+Clock.TICK = 5000;
+
+Clock.prototype.printTime = function () {
+  // Format the time in HH:MM:SS
+  console.log(this.currentTime);
+};
+
+Clock.prototype.run = function () {
+  // 1. Set the currentTime.
+  // 2. Call printTime.
+  // 3. Schedule the tick interval.
+  this.currentTime = this.hour + ":" + this.minutes + ":" + this.seconds;
+  this.printTime();
+  setInterval(function () {
+    this._tick();
+    this.currentTime = this.hour + ":" + this.minutes + ":" + this.seconds;
+    this.printTime();
+  }.bind(this), 5000);
+};
+
+Clock.prototype._tick = function () {
+  // 1. Increment the currentTime.
+  // 2. Call printTime.
+  this.seconds += 5;
+  if (this.seconds >= 60) {
+    this.seconds -= 60;
+    this.minutes += 1;
+  }
+  if (this.minutes >= 60) {
+    this.minutes = 0;
+    this.hour += 1;
+  }
+  if (this.hour >= 24) {
+    this.hour = 0;
+  }
+};
+
+// var clock = new Clock();
+// clock.run();
+
+var readline = require("readline");
+reader = readline.createInterface({
+  input: process.stdin,
+  output: process.stdout
+})
+
+function addNumbers(sum, numsLeft, completionCallback) {
+  if (numsLeft > 0) {
+    reader.question("Enter a number: ", function(numString) {
+      sum += parseInt(numString);
+      console.log(sum);
+      addNumbers(sum, numsLeft - 1, completionCallback);
+    })
+  } else {
+    completionCallback(sum);
+  }
+}
+
+// addNumbers(0, 3, function (sum) {
+//   console.log("Total Sum: " + sum);
+// });
+
+function askIfGreaterThan(el1, el2, callback) {
+  reader.question("Is " + el1 + " greater than " + el2 + "?", function(answer) {
+    callback(answer === "yes");
+  });
+}
+
+function innerBubbleSortLoop(arr, i, madeAnySwaps, outerBubbleSortLoop) {
+  if (i < arr.length - 1) {
+    askIfGreaterThan(arr[i], arr[i + 1], function(isGreaterThan) {
+      if (isGreaterThan) {
+        var temp = arr[i];
+        arr[i] = arr[i + 1];
+        arr[i + 1] = temp;
+        madeAnySwaps = true;
+      }
+      innerBubbleSortLoop(arr, i + 1, madeAnySwaps, outerBubbleSortLoop);
+    });
+  } else {
+    outerBubbleSortLoop(madeAnySwaps);
+  }
+}
+
+function absurdBubbleSort(arr, sortCompletionCallback) {
+  function outerBubbleSortLoop(madeAnySwaps) {
+    if (madeAnySwaps) {
+      innerBubbleSortLoop(arr, 0, false, outerBubbleSortLoop);
+    } else {
+      sortCompletionCallback(arr);
+    }
+  }
+
+  outerBubbleSortLoop(true);
+}
+
+absurdBubbleSort([3, 2, 1], function (arr) {
+  console.log("Sorted array: " + JSON.stringify(arr));
+  reader.close();
+});
