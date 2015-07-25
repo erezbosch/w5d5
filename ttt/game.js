@@ -1,9 +1,9 @@
 var Board = require("./board");
 
-function Game(reader) {
+function Game(reader, players) {
   this.reader = reader;
   this.board = new Board();
-  this.turn = "X";
+  this.players = players;
 }
 
 Game.prototype.run = function () {
